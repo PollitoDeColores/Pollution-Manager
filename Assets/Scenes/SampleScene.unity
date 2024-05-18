@@ -994,6 +994,31 @@ PrefabInstance:
       propertyPath: m_Name
       value: Manager_Prefab
       objectReference: {fileID: 0}
+    - target: {fileID: 8840136160085295557, guid: 6a7da58c83e2abe40b21f6503c93ddc3,
+        type: 3}
+      propertyPath: Happiness
+      value: 39
+      objectReference: {fileID: 0}
+    - target: {fileID: 8840136160085295557, guid: 6a7da58c83e2abe40b21f6503c93ddc3,
+        type: 3}
+      propertyPath: Pollution
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 8840136160085295557, guid: 6a7da58c83e2abe40b21f6503c93ddc3,
+        type: 3}
+      propertyPath: ChoiceTime
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8840136160085295557, guid: 6a7da58c83e2abe40b21f6503c93ddc3,
+        type: 3}
+      propertyPath: HappinessRate
+      value: -5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8840136160085295557, guid: 6a7da58c83e2abe40b21f6503c93ddc3,
+        type: 3}
+      propertyPath: PollutionRate
+      value: 10
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

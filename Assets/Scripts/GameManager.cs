@@ -72,14 +72,16 @@ public class GameManager : MonoBehaviour
 
     private void HideAll()
     {
-        foreach(Choice choice in PollutionChoices)
-        {
-            choice.gameObject.SetActive(false);
-        }
-        foreach (Choice choice in HappinessChoices)
-        {
-            choice.gameObject.SetActive(false);
-        }
+        if(PollutionChoices != null)
+            foreach(Choice choice in PollutionChoices)
+            {
+                choice.gameObject.SetActive(false);
+            }
+        if(HappinessChoices != null)
+            foreach (Choice choice in HappinessChoices)
+            {
+                choice.gameObject.SetActive(false);
+            }
         StartCoroutine(WeekPassingBy());
     }
 
@@ -125,7 +127,7 @@ public class GameManager : MonoBehaviour
         PollutionChoices[pcv].gameObject.SetActive(true);
         HappinessChoices[hcv].gameObject.SetActive(true);
         yield return null;
-        //HideAll();
+        HideAll();
     }
 
     public void ChoiceTaken(Choice choice)
