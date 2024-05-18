@@ -1,16 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using UnityEditor.SearchService;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    private GameObject[] All;
+    private Choice[] PollutionChoices;
+    private Choice[] HappinessChoices;
     [Header("Propiedades")]
-    [SerializeField] Choice[] PollutionChoices;
-    [SerializeField] Choice[] HappinessChoices;
     [SerializeField] private List<Choice> ActiveChoices;
     [SerializeField] private int PollutionRate;
     [SerializeField] private int HappinessRate;
     [SerializeField] private int WeeksPassed;
+    [SerializeField] private int LimitValue;
 
 
     [Header("Variables")]
@@ -18,6 +22,12 @@ public class GameManager : MonoBehaviour
     [SerializeField] int Happiness;
     [SerializeField] int WeekTime;
     [SerializeField] int ChoiceTime;
+
+    [Header("Shaders")]
+    [SerializeField] GameObject Lost;
+    [SerializeField] Material ParticleH, ParticleA;
+    [SerializeField] ParticleSystem PollutionParticles, HappinessParticles, AngryParticles;
+    private ParticleSystem.EmissionModule ModulePo, ModuleHapp, ModuleAng;
 
     public static GameManager instance;
 
@@ -27,9 +37,31 @@ public class GameManager : MonoBehaviour
             instance = this;
         else
             Destroy(this.gameObject);
+        ModulePo = PollutionParticles.emission;
+        ModuleHapp = HappinessParticles.emission;
+        ModuleAng = AngryParticles.emission;
     }
     private void Start()
     {
+        ModuleAng.rateOverTime = 0;
+        int j = 0;
+        int i = 0;
+        All = GameObject.FindGameObjectsWithTag("Choice");
+        foreach(GameObject choice in All)
+        {
+            Choice Temp = gameObject.GetComponent<Choice>();
+            if( Temp != null )
+                if(Temp._RateH > 0)
+                {
+                    HappinessChoices[i] = Temp;
+                    i++;
+                }
+                else if(Temp._RateP < 0) 
+                {
+                    PollutionChoices[j] = Temp;
+                    j++;
+                }                  
+        }
         StartTutorial();
     }
 
@@ -63,7 +95,25 @@ public class GameManager : MonoBehaviour
         Debug.Log("RateP " + PollutionRate);
         Debug.Log("RateH " + HappinessRate);
         /*Espacio para el código de actualización gráfica*/
+        if( Happiness < 40)
+        {
+            ModuleHapp.rateOverTime = 0;
+            ModuleAng.rateOverTime = (LimitValue/2)-Happiness;
+        }
+        else
+        {
+            ModuleHapp.rateOverTime = Happiness / 15;
+            ModuleAng.rateOverTime = 0;
+        }
+        ModulePo.rateOverTime = Pollution;
+
         yield return new WaitForSeconds(WeekTime);
+        
+        if(Pollution >=95 || Happiness <= 5)
+        {
+            Lost.SetActive(true);
+            this.gameObject.SetActive(false);
+        }
 
         StartCoroutine(ChoiceCountdown());
     }
@@ -74,8 +124,8 @@ public class GameManager : MonoBehaviour
         int hcv = Random.Range(0, HappinessChoices.Length);
         PollutionChoices[pcv].gameObject.SetActive(true);
         HappinessChoices[hcv].gameObject.SetActive(true);
-        yield return new WaitForSeconds(ChoiceTime);
-        HideAll();
+        yield return null;
+        //HideAll();
     }
 
     public void ChoiceTaken(Choice choice)
