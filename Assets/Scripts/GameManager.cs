@@ -6,8 +6,8 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     private GameObject[] All;
-    private Choice[] PollutionChoices;
-    private Choice[] HappinessChoices;
+    [SerializeField] private Choice[] PollutionChoices;
+    [SerializeField] private Choice[] HappinessChoices;
     [Header("Propiedades")]
     [SerializeField] private List<Choice> ActiveChoices;
     [SerializeField] private int PollutionRate;
@@ -45,7 +45,7 @@ public class GameManager : MonoBehaviour
         ModuleAng.rateOverTime = 0;
         int j = 0;
         int i = 0;
-        All = GameObject.FindGameObjectsWithTag("Choice");
+        /*All = GameObject.FindGameObjectsWithTag("Choice");
         foreach(GameObject choice in All)
         {
             Choice Temp = gameObject.GetComponent<Choice>();
@@ -60,7 +60,7 @@ public class GameManager : MonoBehaviour
                     PollutionChoices[j] = Temp;
                     j++;
                 }                  
-        }
+        }*/
         StartTutorial();
     }
 
@@ -125,7 +125,7 @@ public class GameManager : MonoBehaviour
         int hcv = Random.Range(0, HappinessChoices.Length);
         PollutionChoices[pcv].gameObject.SetActive(true);
         HappinessChoices[hcv].gameObject.SetActive(true);
-        yield return null;
+        yield return new WaitForSeconds(20f) ;
         HideAll();
     }
 
