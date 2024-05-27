@@ -15,6 +15,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int WeeksPassed;
     [SerializeField] private int LimitValue;
 
+    public SliderHappy HappinessSlider;  // Referencia al script del slider de felicidad
+    public PollSlider PollutionSlider;  // Referencia al script del slider de contaminación
 
     [Header("Variables")]
     [SerializeField] int Pollution;
@@ -32,7 +34,7 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        if(instance == null)
+        if (instance == null)
             instance = this;
         else
             Destroy(this.gameObject);
@@ -40,27 +42,16 @@ public class GameManager : MonoBehaviour
         ModuleHapp = HappinessParticles.emission;
         ModuleAng = AngryParticles.emission;
     }
+
     private void Start()
     {
         ModuleAng.rateOverTime = 0;
         int j = 0;
         int i = 0;
-        /*All = GameObject.FindGameObjectsWithTag("Choice");
-        foreach(GameObject choice in All)
-        {
-            Choice Temp = gameObject.GetComponent<Choice>();
-            if( Temp != null )
-                if(Temp._RateH > 0)
-                {
-                    HappinessChoices[i] = Temp;
-                    i++;
-                }
-                else if(Temp._RateP < 0) 
-                {
-                    PollutionChoices[j] = Temp;
-                    j++;
-                }                  
-        }*/
+        // Inicializar los sliders
+        HappinessSlider.setMaxH(LimitValue);
+        PollutionSlider.setMaxP(LimitValue);
+
         StartTutorial();
     }
 
@@ -71,12 +62,12 @@ public class GameManager : MonoBehaviour
 
     private void HideAll()
     {
-        if(PollutionChoices != null)
-            foreach(Choice choice in PollutionChoices)
+        if (PollutionChoices != null)
+            foreach (Choice choice in PollutionChoices)
             {
                 choice.gameObject.SetActive(false);
             }
-        if(HappinessChoices != null)
+        if (HappinessChoices != null)
             foreach (Choice choice in HappinessChoices)
             {
                 choice.gameObject.SetActive(false);
@@ -86,7 +77,7 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator WeekPassingBy()
     {
-        foreach(Choice choice in ActiveChoices)
+        foreach (Choice choice in ActiveChoices)
         {
             Happiness = choice.CountHappiness(Happiness);
             Pollution = choice.CountPollution(Pollution);
@@ -95,11 +86,16 @@ public class GameManager : MonoBehaviour
         Debug.Log("Poll " + Pollution);
         Debug.Log("RateP " + PollutionRate);
         Debug.Log("RateH " + HappinessRate);
+
+        // Actualizar los sliders
+        HappinessSlider.sethappinness(Happiness);
+        PollutionSlider.setPoll(Pollution);
+
         /*Espacio para el código de actualización gráfica*/
-        if( Happiness < 40)
+        if (Happiness < 40)
         {
             ModuleHapp.rateOverTime = 0;
-            ModuleAng.rateOverTime = (LimitValue/2)-Happiness;
+            ModuleAng.rateOverTime = (LimitValue / 2) - Happiness;
         }
         else
         {
@@ -109,8 +105,8 @@ public class GameManager : MonoBehaviour
         ModulePo.rateOverTime = Pollution;
 
         yield return new WaitForSeconds(WeekTime);
-        
-        if(Pollution >=95 || Happiness <= 5)
+
+        if (Pollution >= 95 || Happiness <= 5)
         {
             Lost.SetActive(true);
             this.gameObject.SetActive(false);
@@ -125,14 +121,14 @@ public class GameManager : MonoBehaviour
         int hcv = Random.Range(0, HappinessChoices.Length);
         PollutionChoices[pcv].gameObject.SetActive(true);
         HappinessChoices[hcv].gameObject.SetActive(true);
-        yield return new WaitForSeconds(20f) ;
+        yield return new WaitForSeconds(20f);
         HideAll();
     }
 
     public void ChoiceTaken(Choice choice)
     {
         ActiveChoices.Add(choice);
-        if(ActiveChoices.Count > 8)
+        if (ActiveChoices.Count > 8)
         {
             Debug.Log("No se pueden tomar más medidas, elimina una");
         }
